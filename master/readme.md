@@ -69,7 +69,65 @@ How to define system requirements
    ![img_6.png](img_6.png)
    ![img_7.png](img_7.png)
    ![img_8.png](img_8.png)
-3. 
+
+Infrastructure to achieve the non-functional requirements
+---------------------------------------
+1. Servers
+   1. CPU 
+   2. Memory Size
+   3. Disk
+   4. Network IO
+   5. Decision
+      1. We decide the server optimized to one or more of the following properties like whether cpu heavy, disk heavy, etc.
+   6. Usually CPU is easier to scale and network IO is hard to scale
+2. Rack
+   1. Servers are physically easier to reach, examine, and manipulate.
+   2. Simplifies cooling and increases security.
+   3. Has its own network and power source.
+   4. To increase availability, we can place servers in different racks.
+   5. To reduce latency, we can place servers
+      in the same rack.
+3. Data Center
+   1. Group of racks
+   2. Has independent power, cooling, and physical security.
+   3. May become unavailable due to power outage, earthquake.
+4. Availability Zones
+   1. Group of datacenters
+   2. Increases availability as hardware is distributed across multiple data centers.
+   3. Increases scalability as there are
+      multiple places to allocate hardware from.
+5. Regions
+   1. Group of availability zones
+   2. Within a radius of 100 km.
+   3. AZS in a region are interconnected with high-bandwidth and low-latency networking.
+![img_10.png](img_10.png)
+6. Helps in achieving some non-functional requriments
+   1. Deploying in multiple regions to tackle world wide traffic
+      1. we deploy a copy of the system to every region worldwide
+      2.  improves performance—the system is physically closer to users
+      3.  increases availability—we can forward requests to other regions 
+      4. improves scalability—more hardware is available for allocation
+   2. In each availability zone 
+      1. increases durability—we can replicate data quickly between zones within each data center
+      2. we deploy to servers in different racks 
+      3.  we choose the server type based on the workload it expects to run
+
+Fundamentals of reliable, scalable, and fast communication
+--------------------------------
+1. Synchronous vs asynchronous communication
+   1. Synchronous and asynchronous request response
+      ![img_11.png](img_11.png)
+   2. Asynchronous communication
+      ![img_12.png](img_12.png)
+2. Messaging solves many problems
+   ![img_13.png](img_13.png)
+3. Choice is made on client requirement
+   ![img_14.png](img_14.png)
+
+   
+
+
+
       
 
       
