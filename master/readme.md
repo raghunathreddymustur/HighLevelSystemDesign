@@ -349,7 +349,20 @@ Data Store Internals - Cannot rely on in a memory database
       ![img_96.png](img_96.png)
       3. How Sorted List Help
       ![img_95.png](img_95.png)
-      
+
+How to build efficient communication in distributed systems
+-------------
+1. Pull vs Push
+   ![img_97.png](img_97.png)
+2. Host Discovery
+   ![img_99.png](img_99.png)
+   ![img_98.png](img_98.png)
+3. Service Discovery
+   ![img_100.png](img_100.png)
+   1. Client Side
+      ![img_101.png](img_101.png)
+      ![img_102.png](img_102.png)
+4. 
    
 
    
