@@ -362,7 +362,73 @@ How to build efficient communication in distributed systems
    1. Client Side
       ![img_101.png](img_101.png)
       ![img_102.png](img_102.png)
-4. 
+4. Peer Discovery
+   1. Sharing copy of IP of ever machine
+      1. Every new device added you have to redeploy it
+      ![img_103.png](img_103.png)
+   2. Storing info as text in DNS server
+      ![img_104.png](img_104.png)
+   3. Gossip Protocol
+      ![img_105.png](img_105.png)
+      1. Algo
+      ![img_106.png](img_106.png)
+      ![img_107.png](img_107.png)
+      2. Benefits
+         ![img_108.png](img_108.png)
+5. How to choose network protocol
+   1. Tcp
+      ![img_109.png](img_109.png)
+   2. Why not TCP vs HTTP
+      ![img_111.png](img_111.png)
+   3. Comparison
+      ![img_112.png](img_112.png)
+6. Protocols in real life
+   ![img_113.png](img_113.png)
+   Realworld problems
+   ![img_114.png](img_114.png)
+7. Reallife video streaming
+   ![img_115.png](img_115.png)
+   ![img_116.png](img_116.png)
+   ![img_117.png](img_117.png)
+8. CDN
+   ![img_118.png](img_118.png)
+   ![img_119.png](img_119.png)
+   ![img_120.png](img_120.png)
+   ![img_121.png](img_121.png)
+   ![img_122.png](img_122.png)
+9. Pull and Push Tech
+   ![img_123.png](img_123.png)
+   1. Push Web Sockets for Bidirectional connection
+      ![img_124.png](img_124.png)
+      ![img_125.png](img_125.png)
+   2. Push for Unidirectional
+      ![img_126.png](img_126.png)
+   3. Push for Unidirectional realtime examples
+      ![img_127.png](img_127.png)
+      ![img_128.png](img_128.png)
+      ![img_129.png](img_129.png)
+   4. Large Scale Applications
+      ![img_130.png](img_130.png)
+      ![img_131.png](img_131.png)
+      ![img_132.png](img_132.png)
+      ![img_134.png](img_134.png)
+10. How to deliver data reliably
+    1. Problems
+       ![img_135.png](img_135.png)
+      ![img_136.png](img_136.png)
+    2. Timeouts
+      ![img_137.png](img_137.png)
+      ![img_138.png](img_138.png)
+    3. How to handle failed request
+      ![img_139.png](img_139.png)
+      ![img_140.png](img_140.png)
+      ![img_141.png](img_141.png)
+      ![img_142.png](img_142.png)
+    4. When to retry
+      ![img_143.png](img_143.png)
+      ![img_144.png](img_144.png)
+      ![img_145.png](img_145.png)
+      
    
 
    
