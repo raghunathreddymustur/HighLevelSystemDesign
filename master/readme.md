@@ -428,6 +428,90 @@ How to build efficient communication in distributed systems
       ![img_143.png](img_143.png)
       ![img_144.png](img_144.png)
       ![img_145.png](img_145.png)
+    5. Message delivery guarantees
+      ![img_146.png](img_146.png)
+      ![img_147.png](img_147.png)
+      ![img_148.png](img_148.png)
+      ![img_149.png](img_149.png)
+      ![img_150.png](img_150.png)
+      ![img_151.png](img_151.png)
+    6. Consumer offsets
+      ![img_152.png](img_152.png)
+11. How to deliver data quickly
+    1. Batching
+      ![img_153.png](img_153.png)
+      ![img_154.png](img_154.png)
+      ![img_155.png](img_155.png)
+      ![img_156.png](img_156.png)
+      ![img_157.png](img_157.png)
+    2. Compression
+      ![img_158.png](img_158.png)
+      ![img_159.png](img_159.png)
+      ![img_160.png](img_160.png)
+      ![img_161.png](img_161.png)
+      ![img_162.png](img_162.png)
+12. How to deliver data at large scale
+    1. How to scale message consumption
+      ![img_163.png](img_163.png)
+      ![img_164.png](img_164.png)
+      ![img_165.png](img_165.png)
+    2. Partitions
+      ![img_166.png](img_166.png)
+      ![img_167.png](img_167.png)
+      ![img_168.png](img_168.png)
+      ![img_169.png](img_169.png)
+      ![img_170.png](img_170.png)
+      ![img_171.png](img_171.png)
+    3. Partitioning strategies
+      ![img_172.png](img_172.png)
+      ![img_173.png](img_173.png)
+      ![img_174.png](img_174.png)
+    4. Request routing
+      ![img_175.png](img_175.png)
+      ![img_176.png](img_176.png)
+      ![img_177.png](img_177.png)
+      ![img_178.png](img_178.png)
+      ![img_179.png](img_179.png)
+      ![img_180.png](img_180.png)
+    5. Re-Balancing partitions
+      ![img_181.png](img_181.png)
+      ![img_182.png](img_182.png)
+      ![img_183.png](img_183.png)
+      ![img_184.png](img_184.png)
+      ![img_185.png](img_185.png)
+      ![img_186.png](img_186.png)
+      ![img_187.png](img_187.png)
+    6. Consistent hashing
+      ![img_188.png](img_188.png)
+      ![img_189.png](img_189.png)
+      ![img_190.png](img_190.png)
+      ![img_191.png](img_191.png)
+      ![img_192.png](img_192.png)
+      ![img_193.png](img_193.png)
+      ![img_194.png](img_194.png)
+13. How to protect servers from clients
+    1. System Overload
+      ![img_195.png](img_195.png)
+    2. Autoscaling
+      ![img_196.png](img_196.png)
+      ![img_197.png](img_197.png)
+      ![img_198.png](img_198.png)
+    3. Autoscaling system design
+      ![img_199.png](img_199.png)
+    4. Load shedding
+      ![img_200.png](img_200.png)
+      ![img_201.png](img_201.png)
+      ![img_202.png](img_202.png)
+      ![img_203.png](img_203.png)
+      ![img_204.png](img_204.png)
+      ![img_205.png](img_205.png)
+    5. Rate limiting
+      ![img_206.png](img_206.png)
+      ![img_207.png](img_207.png)
+      ![img_208.png](img_208.png)
+      ![img_209.png](img_209.png)
+      ![img_210.png](img_210.png)
+          
       
    
 
