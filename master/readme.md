@@ -511,6 +511,26 @@ How to build efficient communication in distributed systems
       ![img_208.png](img_208.png)
       ![img_209.png](img_209.png)
       ![img_210.png](img_210.png)
+14. How to protect clients from servers
+    1. Synchronous and asynchronous clients
+        ![img_211.png](img_211.png)
+        ![img_212.png](img_212.png)
+        ![img_213.png](img_213.png)
+        ![img_214.png](img_214.png) 
+        ![img_215.png](img_215.png)
+    2. Circuit breaker
+        ![img_216.png](img_216.png)
+        ![img_217.png](img_217.png)
+        ![img_218.png](img_218.png)
+    3. Fail-fast design principle
+        ![img_219.png](img_219.png)
+        ![img_220.png](img_220.png)
+        ![img_221.png](img_221.png)
+    4. Bulkhead
+        ![img_222.png](img_222.png)
+    5. Shuffle sharding
+        ![img_223.png](img_223.png)
+        ![img_224.png](img_224.png)
           
       
    
