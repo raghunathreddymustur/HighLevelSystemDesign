@@ -83,156 +83,49 @@
 - Use lock splitting and lock striping techniques
 - Use read-write locks.
 - Use atomic operations where possible.
+- Use Compare and Swap in low contention cases
+- [Detail Explinaton](DevToArch/concurrrency/readme.md)
 
-## Lock Splitting and Lock Striping Examples in Java
+# Deadlocks
 
-This project demonstrates the concepts of lock splitting and lock striping in Java to reduce lock contention and improve concurrency. Both techniques involve using multiple locks to protect different parts of a data structure, allowing multiple threads to access different parts concurrently.
+## Lock Ordering Related
+- Result of threads trying to acquire multiple locks
+- Simultaneous money transfer from X and Y accounts by thread T1 and T2
+    - T1: from X to Y
+    - T2: from Y to X
+- Acquire locks in a fixed global order
+- Acquire locks only in the sort order of account numbers: X and then Y
 
-## Overview
+## Request Load Related
+- Threads waiting for connections to multiple databases
+    - May run out of enough connections resulting in deadlocks
+- Threads waiting for other threads to be spawned and perform some work
+    - May run out of enough threads resulting in deadlocks
 
-- **Lock Splitting**: Divides a single lock that protects multiple resources into multiple locks, each protecting a smaller subset of resources.
-- **Lock Striping**: Divides a single lock that protects a data structure into multiple locks, each responsible for a subset of the data.
 
-## Lock Splitting Example
+# Coherence Delays
+Coherence delays in concurrency refer to the time it takes for changes made by one thread to a shared variable to become visible to other threads. This is crucial in multi-threaded programming to ensure that all threads have a consistent view of the shared data
 
-The following Java code demonstrates lock splitting with separate locks for different resources:
+## Visibility Guarantees
+- **Java (volatile)**
+    - A variable that a volatile read is always read from main memory and written back to main memory when updated in a processor
 
-```java
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+## Locking (synchronized)
+- All variables accessed inside a sync block are synchronized at the start of the sync block
+- All variables modified in the sync block are flushed to the main memory when the associated thread exits the sync block
+- Synchronization ensures locking & visibility.
 
-public class LockSplittingExample {
-    private final Lock lock1 = new ReentrantLock();
-    private final Lock lock2 = new ReentrantLock();
+## Coherency Barriers
+- These guarantees are provided by coherency barriers which may result in invalidating or flushing of caches
 
-    private int resource1;
-    private int resource2;
+# Choosing Between `volatile` and Locking Mechanisms (`synchronized`)
 
-    public void incrementResource1() {
-        lock1.lock();
-        try {
-            resource1++;
-        } finally {
-            lock1.unlock();
-        }
-    }
+## When to Use `volatile`
+1. **Simple Flags**: Use `volatile` for simple flags or state variables that are read and written by multiple threads but do not require complex operations.
+2. **Single Variable Updates**: When you need to ensure visibility of changes to a single variable across threads without needing atomicity for compound actions.
+3. **Performance Considerations**: `volatile` can be more performant than locking because it avoids the overhead of acquiring and releasing locks.
 
-    public void incrementResource2() {
-        lock2.lock();
-        try {
-            resource2++;
-        } finally {
-            lock2.unlock();
-        }
-    }
-
-    public int getResource1() {
-        lock1.lock();
-        try {
-            return resource1;
-        } finally {
-            lock1.unlock();
-        }
-    }
-
-    public int getResource2() {
-        lock2.lock();
-        try {
-            return resource2;
-        } finally {
-            lock2.unlock();
-        }
-    }
-
-    public static void main(String[] args) {
-        LockSplittingExample example = new LockSplittingExample();
-        // Example usage
-        example.incrementResource1();
-        example.incrementResource2();
-        System.out.println("Resource1: " + example.getResource1());
-        System.out.println("Resource2: " + example.getResource2());
-    }
-}
-```
-
-## Lock Striping Example in Java
-
-This project demonstrates the concept of lock striping in Java to reduce lock contention and improve concurrency. Lock striping involves using multiple locks to protect different parts of a data structure, allowing multiple threads to access different parts concurrently.
-
-## Overview
-
-Lock striping is a technique used to divide a single lock that protects a data structure into multiple locks, each responsible for a subset of the data. This reduces contention and improves performance in multi-threaded environments.
-
-## Example Code
-
-The following Java code demonstrates lock striping with an array of locks protecting an array of resources:
-
-```java
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-public class LockStripingExample {
-    private final Lock[] locks;
-    private final int[] resources;
-
-    public LockStripingExample(int numStripes) {
-        locks = new ReentrantLock[numStripes];
-        resources = new int[numStripes];
-        for (int i = 0; i < numStripes; i++) {
-            locks[i] = new ReentrantLock();
-        }
-    }
-
-    public void incrementResource(int index) {
-        int stripe = index % locks.length;
-        locks[stripe].lock();
-        try {
-            resources[index]++;
-        } finally {
-            locks[stripe].unlock();
-        }
-    }
-
-    public int getResource(int index) {
-        int stripe = index % locks.length;
-        locks[stripe].lock();
-        try {
-            return resources[index];
-        } finally {
-            locks[stripe].unlock();
-        }
-    }
-
-    public static void main(String[] args) {
-        LockStripingExample example = new LockStripingExample(4);
-        // Example usage
-        example.incrementResource(0);
-        example.incrementResource(1);
-        System.out.println("Resource 0: " + example.getResource(0));
-        System.out.println("Resource 1: " + example.getResource(1));
-    }
-}
-```
-
-## Benefits and Overheads
-
-### Lock Splitting
-
-**Benefits**:
-- **Reduced Contention**: By using separate locks for different resources, contention is reduced as threads are less likely to block each other.
-- **Increased Concurrency**: Multiple threads can access different resources simultaneously, improving overall throughput.
-
-**Overhead**:
-- **Complexity**: Managing multiple locks can increase the complexity of the code.
-- **Memory Usage**: Each lock consumes additional memory, which can be significant if there are many locks.
-
-### Lock Striping
-
-**Benefits**:
-- **Increased Concurrency**: Multiple threads can work on different parts of the data structure simultaneously, reducing contention.
-- **Improved Performance**: With less contention, the overall performance of the application can improve, especially under high concurrency.
-
-**Overhead**:
-- **Complexity**: Managing an array of locks and ensuring the correct lock is used for each operation can be more complex than using a single lock.
-- **Memory Overhead**: More locks mean more memory usage, which can be significant if the number of stripes is large.
-
+## When to Use Locking (`synchronized`)
+1. **Compound Actions**: When you need to perform compound actions atomically, such as incrementing a counter or updating multiple variables together.
+2. **Complex State Management**: When managing complex state that involves multiple variables or requires ensuring that a series of operations are performed atomically.
+3. **Thread Safety**: When you need to ensure that only one thread can execute a block of code at a time, preventing race conditions.
