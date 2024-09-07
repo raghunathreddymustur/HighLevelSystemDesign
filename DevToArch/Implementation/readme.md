@@ -187,10 +187,367 @@ eureka.client.registryFetchIntervalSeconds=10
    2. In Other Services - we have to write some logic
       1. @LoadBalancerClient to find instance from available instances
 4. Ngnix Server Side load balancer and to server static content
-   1. Created a ngnix.conf file which will have information about all instaces of gateway service
-   2. Automated the adding of instances of a particular service to conf file automatically. Whenever ngnix server is started via dockers it will read the env variables and add the instances to conf file
+   1. Created a [ngnix.conf](scripts/docker/LoadBalancer/nginx/nginx.conf) file which will have information about all instaces of gateway service
+   2. [Automated](scripts/docker/LoadBalancer/nginx/docker-entrypoint.sh) the adding of instances of a particular service to conf file automatically. Whenever ngnix server is started via dockers it will read the env variables and add the instances to conf file
+   3. Instances of services are added to conf file based on environment variable set in [docker](scripts/docker/LoadBalancer/docker-compose.yml) file
+
+   
+# Observability of System
+1. As part of Observability we will add Logs, Trace, Metrics
+2. Errors: able to find which part of system is having issue
+2. Audit: able to check user claims(missing info) through logs
+3. Analytics: Tracking time taken by requests
+![img_22.png](img_22.png)
+
+## Centralized Logging
+![img_23.png](img_23.png)
+
+1. We have docker [compose](scripts/docker/obserability/DockerCompose.yaml) file having the configuration about Log Collector(FluentD)
+```yaml
+fluentd:
+build:
+context: ../../fluentd
+dockerfile: Dockerfile
+image: ntw/fluentd
+container_name: fluentd
+hostname: fluentd
+networks:
+- mynet1
+ports:
+- "24224:24224"
+volumes:
+- ${PWD}/fluent.conf:/fluentd/etc/fluent.conf
+- fluentd-logs:/fluentd/log
+depends_on:
+- "elasticsearch"
+restart: unless-stopped
+```
+1. Have [docker](scripts/docker/obserability/fluentd-docker) file to create fluent D image and it a [file](scripts/docker/obserability/fluentD.conf) configure it
+   1. How does services know about log collector?
+      1. Docker log driver will be out log agent
+      2. In docker-compose file for each service we will specify the log collector( fluent d) location
+         ```yaml
+         web:
+         build:
+         context: ../../web
+         dockerfile: Dockerfile
+         image: ntw/web
+         container_name: web
+         hostname: web
+         networks:
+         - mynet1
+           ports:
+           - "8000:8000"
+             command: python3 manage.py runserver 0.0.0.0:8000
+             env_file: .env
+             volumes:
+           - app-logs:/var/log/oms
+             logging:
+             `driver: "fluentd"
+             options:
+             fluentd-address: "127.0.0.1:24224"`
+             tag: web
+             depends_on:
+           - "fluentd"
+           ```
+   2. Add the Elasticsearch for storing logs
+      ```yaml
+      elasticsearch:
+      image: elasticsearch:7.13.2
+      container_name: elasticsearch
+      hostname: elasticsearch
+      environment:
+      - "discovery.type=single-node"
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "xpack.security.enabled=false"
+        expose:
+        - "9200"
+        ports:
+        - "9200:9200"
+        networks:
+        - mynet1
+        volumes:
+        - elasticsearch-data:/usr/share/elasticsearch/data
+        restart: unless-stopped
+
+        ```
+   3. Add the Kibana for Visulization
+      ```yaml
+      kibana:
+      image: kibana:7.13.2
+      container_name: kibana
+      hostname: kibana
+      ports:
+      - "5601:5601"
+      networks:
+        - mynet1
+        environment:
+        - ELASTICSEARCH_HOSTS="http://elasticsearch:9200"
+        restart: unless-stopped
+        depends_on:
+        - "elasticsearch"
+
+        ```
+   5. Analyze the logs in elsatic search dashboard
+      1. Create an index or map to an index
+      2. Filter logs based filters like container-name, logs...etc
+      3. Still have to explore
    
 
+# Tracing for monitoring performance 
+1. Distributed tracing will help in pinpointing the which component is having performance problems
+   ![img_24.png](img_24.png)
+2. Add the required arch to trace in each component
+   ![img_25.png](img_25.png)
+3. We use jager for tracing
+   1. Add the Trace Agent( which will collect all required logs) in each component
+   2. Add the collector(Jaeger) to collect all individual traces from each component
+   3. Store all collected traces in storage( elastic search)
+   ![img_26.png](img_26.png)
+4. Concept of distributed tracing
+   ![img_27.png](img_27.png)
+5. How to deal with services which are calling other services or async flows
+   1. We explicitly extract the span from headers and pass to other services
+6. Made some configurations in .env file
+7. Jaeger Instrumentation in code
+   1. In Web
+      1. ![img_28.png](img_28.png)
+      2. Instrument required API's with tracing
+         ![img_29.png](img_29.png)
+   2. In Web Services
+      1. Add the dependency to common project
+      2. Add the required properties in config(properties) file
+      ![img_30.png](img_30.png)
+      3. Add the instrumentation if your service is calling other service - to trace that call
+      ![img_31.png](img_31.png)
+      4. Similarly if you have async processing, instrument that as well
+      ![img_32.png](img_32.png)
+         8. Dockering the jaeger
+            1. Create images and run it
+               ```yaml
+
+
+                        jaeger-agent:
+                        image: jaegertracing/jaeger-agent
+                        container_name: jaeger-agent
+                        hostname: jaegar-agent
+                        networks:
+                        - mynet1
+                          ports:
+                           - "6831:6831/udp"
+                           - "14271:14271"
+                             environment:
+                           - SPAN_STORAGE_TYPE=elasticsearch
+                             command: ["--reporter.grpc.host-port=jaeger-collector:14250"]
+                             restart: unless-stopped
+                             depends_on:
+                           - "jaeger-collector"
+               
+                        jaeger-collector:
+                        image: jaegertracing/jaeger-collector
+                        container_name: jaeger-collector
+                        hostname: jaegar-collector
+                        networks:
+                        - mynet1
+                          ports:
+                           - "14250:14250"
+                           - "14269:14269"
+                             environment:
+                           - SPAN_STORAGE_TYPE=elasticsearch
+                        #      - ES_SERVER_URLS="elasticsearch:9200"
+                            command: [
+                              "--es.server-urls=http://elasticsearch:9200",
+                              "--es.num-shards=1",
+                              "--es.num-replicas=0",
+                              "--log-level=error"
+                            ]
+                            restart: unless-stopped
+               
+                        jaeger-query:
+                        image: jaegertracing/jaeger-query
+                        container_name: jaeger-query
+                        hostname: jaeger-query
+                        networks:
+                        - mynet1
+                          ports:
+                           - "16685:16685"
+                           - "16686:16686"
+                           - "16687:16687"
+                             environment:
+                           - SPAN_STORAGE_TYPE=elasticsearch
+                             command: [
+                             "--es.server-urls=http://elasticsearch:9200",
+                             "--span-storage.type=elasticsearch",
+                             "--log-level=debug"
+                             ]
+                             restart: unless-stopped
+                             depends_on:
+                           - "jaeger-collector"
+               ```
+         2. Start the services
+         3. Trace the call with Jaeger UI
+         
+# Obserability - Monitoring the services Metrics
+1. ![img_33.png](img_33.png)
+2. ![img_34.png](img_34.png)
+3. Add the required properties in each service
+4. Add to docker-compose file with required configuration( which metrics to monitor)
+   ```yaml
+
+   prometheus:
+   image: prom/prometheus
+   container_name: prometheus
+   hostname: prometheus
+   networks:
+   - mynet1
+   ports:
+     - "9090:9090"
+     command:
+     - '--config.file=/etc/prometheus/prometheus.yml'
+     volumes:
+     - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml
+     - ${PWD}/rules.yml:/etc/prometheus/rules.yml
+     restart: unless-stopped
+   
+   es-exporter:
+   image: prometheuscommunity/elasticsearch-exporter
+   container_name: es-exporter
+   hostname: es-exporter
+   networks:
+   - mynet1
+   ports:
+     - "9114:9114"
+     command:
+     - '--es.uri=http://elasticsearch:9200'
+     restart: unless-stopped
+   
+   pg-exporter:
+   image: prometheuscommunity/postgres-exporter
+   container_name: pg-exporter
+   hostname: pg-exporter
+   networks:
+   - mynet1
+   ports:
+     - "9187:9187"
+     environment:
+     - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/oms?sslmode=disable
+     restart: unless-stopped
+       global:
+       scrape_interval:     15s # Default is every 1 minute.
+       evaluation_interval: 15s # Default is every 1 minute.
+     # scrape_timeout is set to the global default (10s).
+   
+   scrape_configs:
+   - job_name: 'web-app-metrics'
+     metrics_path: '/metrics'
+     scrape_interval: 5s
+     static_configs:
+      - targets:
+         - web:8000
+     - job_name: 'services-metrics'
+       metrics_path: '/actuator/prometheus'
+       scrape_interval: 5s
+       eureka_sd_configs:
+        - server: http://eureka:8761/eureka
+          static_configs:
+        - targets:
+           - eureka:8761
+   #        - auth-svc:8080
+   #        - product-svc:8080
+   #        - order-svc:8080
+   #        - inventory-svc:8080
+   #        - user-profile-svc:8080
+   #        - gateway-svc:8080
+   #        - admin-svc:8080
+   - job_name: 'jaeger-metrics'
+     metrics_path: '/metrics'
+     scrape_interval: 5s
+     static_configs:
+      - targets:
+         - jaeger-agent:14271
+         - jaeger-collector:14269
+         - jaeger-query:16687
+     - job_name: 'database-metrics'
+       metrics_path: '/metrics'
+       scrape_interval: 5s
+       static_configs:
+        - targets:
+           - es-exporter:9114
+           - pg-exporter:9187
+   
+   rule_files:
+   - rules.yml
+   
+   groups:
+   - name: example
+     rules:
+   
+     # Alert for any instance that is unreachable for >5 minutes.
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5s
+        labels:
+        severity: page
+        annotations:
+        summary: "Instance {{ $labels.instance }} down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 seconds."
+   
+     # Alert for any instance that has a median request latency >1s.
+      - alert: APIHighRequestLatency
+        expr: api_http_request_latencies_second{quantile="0.5"} > 0.1
+        for: 10m
+        annotations:
+        summary: "High request latency on {{ $labels.instance }}"
+        description: "{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)"
+
+
+    ```
+5. Start the services & Monitor the metrics
+6. Metrics are exposed by spring boot actutor
+
+## Managing Read Load - Caching
+1. Advantages and Challenges with cache
+   ![img_35.png](img_35.png)
+2. Choosing Redis as Cache
+   ![img_36.png](img_36.png)
+3. Make [changes](redis/javaConfig/configandService.md) in required services to hit cache instead of database
+   1. Add the Cache Configuration in java code and properties.yml
+   2. Make Changes in services
+4. Add the Redis to Docker Compose
+   ```yaml
+   redis:
+   image: redis
+   container_name: redis
+   hostname: redis
+   networks:
+   - mynet1
+   ports:
+     - "6379:6379"
+   
+   
+   redis-exporter:
+   image: oliver006/redis_exporter
+   container_name: redis-exporter
+   hostname: redis-exporter
+   networks:
+   - mynet1
+   ports:
+     - "9121:9121"
+     environment:
+     - REDIS_ADDR=redis://redis:6379
+     restart: unless-stopped
+     ```
+5. Run the service
+6. Test the API using Jaeger Trace - Check the time taken
+
+# Async Processing - Managing Write Load
+1. Advantages
+   ![img_37.png](img_37.png)
+2. 
+3. Identify the API which are write oriented at can be processed in Async
+   1. Order(Processing the order in Async) and Inventory services(Updation of inventory) can be in Aysc
+
+   
 
 
 ## Scripts used to manage and deploy the services
