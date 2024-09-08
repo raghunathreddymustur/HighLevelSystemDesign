@@ -76,6 +76,50 @@
 5. Remove all containers
    1. docker rm -v -f $(docker ps -qa)
 
+# Deployment - Kubernetes
+1. Create Images for every service and upload them to google cloud container registry
+2. Create `Namespaces` to logically group different services
+3. We have which create all images of services and move them to staging area
+4. Deployed in 3 zonal Regions
+5. Config
+   1. We have config file having all required enviroment variables
+   2. We have a secret map to store passwords related to databases..etc
+   3. How many resources can a service consume is defined
+   4. All these configuration can viewed under Google Secrets and Config Map
+6. In Google cloud, load balancers are called services and normal services are called workloads
+7. For Each Service we have config having the following information
+   1. Loadbalncer ( Service) info
+   2. About Current service
+      1. how many replicas
+      2. update strategy
+      3. Specify the location of docker image of service
+      4. Creation of containers with in pod
+      5. Create Volume Mounts
+         1. To save the data to some place( if container dies)
+      6. Liveness probe configration to monitor health and retries
+      7. Defining Enviroment variables
+      8. Stating whether it is a stateful or stateless service
+      9. Type of IP (Whether service can be accessed through internet)
+         1. Custer Ip (can only access internally)
+         2. Node Port ( available for internet)
+         3. Load balancer (available for internet)
+   3. Auto Scaler Configuration
+8. Autoscaling is taken care by kubernetes
+   1. Manually in scripts by number(increasing or decreasing) of replicas
+   2. Auto Scale
+      1. We have kubernetes scripts to enable autoscaling
+      2. We have load test using jmeter to test auto scaling
+9. Rolling Updates
+   1. In production, we will DNS to resolve the ip address of services
+   2. Check the next section (Bug Fixes)
+
+# Bug Fixes
+1. Once bug is fixed
+2. build that particular service (move the artifacts/images to staging directory)
+3. Push the images to cloud image container registry 
+4. roll the update with newer images
+   
+      
 
    
    
@@ -543,9 +587,33 @@ restart: unless-stopped
 # Async Processing - Managing Write Load
 1. Advantages
    ![img_37.png](img_37.png)
-2. 
+2. Choice of RabbitMQ instead of Kafka
+   ![img_38.png](img_38.png)
 3. Identify the API which are write oriented at can be processed in Async
-   1. Order(Processing the order in Async) and Inventory services(Updation of inventory) can be in Aysc
+   1. Order(Processing the order in Async) and Inventory services(Updation of inventory) can be in 
+4. Changes in Services(Order)
+   1. Add the rabbit mq dependency
+   2. Add the required in properties
+   ```yaml
+   
+   order.process.async=true
+   
+   order.queue.type=local
+   order.queue.host=localhost
+   order.queue.name=order-queue
+   ```
+5. Add the java code to add order to queue
+   ![img_39.png](img_39.png)
+6. Flow
+   ![img_40.png](img_40.png)
+   ![img_41.png](img_41.png)
+7. Configuration
+   1. Set properties in .env file
+   2. Add the volume and container for rabbitMq
+   3. Run the services
+   4. You can check about messages in RabbitMQ dashboard
+   5. or you can trace in Jaeger DashBoard
+
 
    
 
