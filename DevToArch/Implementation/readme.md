@@ -614,7 +614,9 @@ restart: unless-stopped
    4. You can check about messages in RabbitMQ dashboard
    5. or you can trace in Jaeger DashBoard
 
+# Scaling Databases
 
+1. Using a Cassandra database to scale the database, look for ppt to see the content
    
 
 
