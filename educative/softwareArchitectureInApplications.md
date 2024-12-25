@@ -388,6 +388,306 @@ The view model links the model and the view, presenting data from the model to t
 - Will the system scale to more users or require additional features?
 - Is it easy to modify and extend the chosen architecture?
 
+## 🖥️ Client-Server Architecture
+
+### 📜 Overview
+Client-server architecture is a two-layered, typically two-tiered, distributed program where clients and servers communicate directly. Clients request resources or services from servers, which respond to these requests.
+
+### 🏢 Where is Business Logic Located?
+The client contains the user interface code, while the server holds the database. Business logic can be on both sides, but it's mostly on the server. Thin clients, with most logic on the server, are preferable for easier deployment.
+
+### 🌐 Applications
+- **Email Systems**: Clients request and send emails through a central server.
+- **Networked Printing Machines**: Clients send print jobs to a server managing the printers.
+- **Internet or World Wide Web**: Clients request web pages from web servers.
+
+### ✅ Advantages
+- **Improved Performance**: Distributes processing tasks between client and server.
+- **Scalability**: Easily scalable by adding more clients or servers.
+- **Security**: Better security by securing the server separately.
+- **Centralized Management**: Easier maintenance and updates through centralized data and resources.
+
+### ❌ Disadvantages
+- **Dependence on Server**: Central server is a single point of failure.
+- **Complexity**: Requires setup and maintenance of both client and server components.
+- **Network Dependencies**: Relies on network connection, which can be a limiting factor.
+- **Cost**: More expensive due to specialized hardware and software requirements.
+
+## 🌐 Peer-to-Peer Architecture
+
+### 📜 Overview
+Peer-to-peer (P2P) architecture allows nodes to act as both clients and servers, distributing the workload among peers without a central server. Nodes contribute and consume resources within the network.
+
+### 🖥️ Types of P2P Architecture
+- **Pure**: All nodes are equal with no central server.
+- **Hybrid**: Some nodes have special roles, like indexing resources.
+- **Structured**: Nodes are organized to facilitate resource discovery and communication.
+
+### 🌟 Applications
+- **File Sharing**: Users download and upload files directly from each other.
+- **Distributed Computing**: Tasks are distributed across multiple computers.
+- **Online Gaming**: Facilitates communication and resource sharing between players.
+- **Communication and Messaging**: Used in applications like Skype and WhatsApp.
+- **Digital Currency**: Used in decentralized currencies like Bitcoin.
+- **Cloud Storage**: Creates decentralized storage systems.
+- **IoT**: Facilitates communication between interconnected devices.
+
+### ✅ Advantages
+- **Decentralization**: More resistant to censorship and unavailability.
+- **Scalability**: Easily scales as nodes communicate directly.
+- **Resource Sharing**: Efficient and cost-effective resource exchange.
+- **Privacy**: Data is shared directly between nodes.
+- **Fault Tolerance**: No central point of failure.
+- **Lower Costs**: No need for central server infrastructure.
+
+### ❌ Disadvantages
+- **Security Vulnerabilities**: Prone to malware and hacking.
+- **Resource Discovery**: Challenging to locate resources without a central directory.
+- **Coordination**: Complex communication and resource sharing.
+- **Performance**: May be slower than client-server networks.
+- **Legal Issues**: Potential for copyright infringement disputes.
+- **Quality of Service**: May not match traditional client-server networks.
 
 
+## 🏛️ Broker Pattern
 
+### 📜 Overview
+The broker pattern inserts a middleman called a broker between service users (clients) and service providers (servers). This pattern helps decouple service providers and consumers.
+
+### 🖥️ Introduction to Broker Pattern
+The broker pattern, also known as the intermediary pattern, allows clients to request services through a broker, which forwards the request to the appropriate server. The server returns the result to the broker, which then forwards it to the client.
+
+### 🛠️ Implementation of Broker Pattern
+The Common Object Request Broker Architecture (CORBA) was the first widely used broker pattern implementation. It is also utilized in Enterprise Java Beans (EJB) and the Microsoft.NET framework.
+
+### ✅ Advantages
+- **Improved Decoupling**: Decouples service providers and consumers, making changes easier.
+- **Enhanced Flexibility**: Allows adding or removing service providers and consumers without changes to other components.
+- **Improved Security**: Acts as a gatekeeper, preventing unauthorized access.
+- **Enhanced Reliability**: Handles communication failures, improving system reliability.
+- **Improved Performance**: Offloads communication and processing tasks, allowing core functions to focus.
+
+### ❌ Disadvantages
+- **Complexity**: More complex than other patterns due to the intermediary component.
+- **Performance Overhead**: Additional layer of abstraction can result in performance overhead.
+- **Increased Development Time**: Requires development and integration of the intermediary component.
+- **Dependency on Broker**: Creates a dependency on the intermediary component.
+- **Difficulty in Troubleshooting**: Additional layer of abstraction makes troubleshooting harder.
+
+
+## 🚰 Pipe and Filter Architecture
+
+### 📜 Overview
+Pipe and filter architecture involves multiple stages of data transformation, creating standalone and reusable components. Each stage processes data and passes it to the next.
+
+### 🏗️ Architecture Description
+Systems handling data transformation should be divided into reusable, independent components. These components communicate using simple, generic mechanisms and can execute in parallel.
+
+### 🔄 Shared Data Pattern
+The shared data pattern is a variant where multiple components access and handle significant volumes of data. This pattern emphasizes the interchange of persistent data between accessors and a shared data source.
+
+### 🌟 Applications
+- **Text Processing**: Used in text editors for spell-checking, grammar-checking, and formatting.
+- **Data Analytics**: Employed in data warehousing and business intelligence systems.
+- **Image Processing**: Utilized in image editors for tasks like color correction and resizing.
+- **Streaming Data**: Applied in video and audio streaming systems.
+- **Bioinformatics**: Used to process genomic data in pipelines and workflows.
+
+### ✅ Advantages
+- **Modularity**: Independent, reusable components.
+- **Flexibility**: Easy to modify or extend the system.
+- **Scalability**: Parallel execution of components.
+- **Maintainability**: Easier to isolate and replace components.
+
+### ❌ Disadvantages
+- **Complexity**: Managing a large number of components.
+- **Overhead**: Data transfer and communication between components.
+- **Lack of Adaptability**: Not well-suited for systems requiring high adaptability.
+
+## 🎉 Event-Driven Architecture
+
+### 📜 Overview
+Event-driven architecture (EDA) is a software design paradigm where the flow of the program is determined by externally produced events or messages. Components communicate by sending and receiving events rather than calling each other’s functions or methods directly.
+
+### 🗂️ Characteristics
+- **Decoupling**: Promotes loose coupling between components, making the system more flexible and easier to modify.
+- **Asynchrony**: Events can be triggered at any time and might not be processed immediately, allowing the system to scale more easily.
+- **Scalability**: Can be scaled horizontally by adding more nodes to handle large volumes of events in real time.
+
+### 🌟 Examples
+- **Webhooks**: Notifications sent from one system to another when a certain event occurs.
+- **Message Queues**: Components send messages to a queue, and a separate process reads and processes them.
+
+### ✅ Advantages
+- **Loose Coupling**: Makes the application more flexible and easier to change.
+- **Scalability**: Easy to scale by adding new components or services.
+- **Asynchrony**: Handles high loads and responds quickly to user interactions.
+- **Reusability**: Promotes the reuse of components.
+
+### ❌ Disadvantages
+- **Complexity**: Can make the application more complex, especially for new developers.
+- **Debugging**: More difficult to track down bugs and errors in large systems.
+- **Latency**: Can introduce latency as events are processed through multiple components.
+- **Ordering**: Does not guarantee the order of events, which can be problematic in some systems.
+
+## 📢 Publish and Subscribe Architecture
+
+### 📜 Overview
+Publish and subscribe architecture involves publishers sending information and subscribers receiving it through an event bus. This decouples the communication between publishers and subscribers.
+
+### 🏗️ Structure
+The architecture consists of publishers, subscribers, and an event bus. The event bus filters and delivers information to relevant subscribers using topic-based and content-based filtering.
+
+### 🌟 Applications
+- **Event-Driven Systems**: Used in systems where events trigger actions, like stock trading platforms.
+- **Messaging Systems**: Facilitates communication in messaging platforms.
+- **Real-Time Data Streaming**: Handles data streams in real-time systems, like weather stations.
+- **IoT and Industrial Automation**: Manages data from connected devices and sensors.
+- **Cloud Computing**: Manages communication between microservices in cloud-based systems.
+
+### ✅ Advantages
+- **Decoupling**: Separates publishers and subscribers, allowing independent updates.
+- **Flexibility**: Easily add or remove components without affecting others.
+- **Scalability**: Supports complex message routing and addition of new components.
+- **Asynchronous Communication**: Improves performance by allowing independent operation.
+- **Loose Coupling**: Simplifies changes and updates to system components.
+
+### ❌ Disadvantages
+- **Complexity**: More complex due to the message broker and component implementation.
+- **Performance Overhead**: Additional layer can reduce performance.
+- **Message Delivery Issues**: Potential for lost messages if the broker or subscriber fails.
+- **Limited Routing Options**: Subscribers receive messages based on specific topics or patterns.
+
+## 🛠️ Hexagonal Architecture
+
+### 📜 Overview
+Hexagonal architecture, or ports and adapters architecture, separates core functionality from external dependencies. It enhances flexibility, modularity, and testability by isolating business logic from interfaces.
+
+### 🏗️ Principles
+- **Core Domain**: Represents business logic and entities, isolated from external dependencies.
+- **Adapters**: Connect the core domain to external systems, implemented as input or output adapters.
+- **Ports**: Define contracts between the core domain and adapters, specifying methods and data structures.
+- **Drivers**: Provide concrete implementation of ports, connecting to the core domain.
+
+### 🌟 Applications
+- **Web Applications**: Decouples business logic from the user interface and web server.
+- **Mobile Applications**: Separates business logic from the mobile platform and user interface.
+- **Microservices**: Isolates business logic from dependencies, allowing independent testing and development.
+- **Command-Line Applications**: Decouples business logic from the command-line interface and operating system.
+
+### ✅ Advantages
+- **Easier Unit Testing**: Isolates core domain from external dependencies.
+- **Modularity**: Promotes creation of replaceable components.
+- **Extensibility**: Allows easy addition or modification of adapters.
+- **Clean Codebase**: Separates core domain from external dependencies.
+
+### ❌ Disadvantages
+- **Added Complexity**: Can be complex for developers unfamiliar with the pattern.
+- **Planning Overhead**: Requires careful planning and design.
+- **Maintenance Difficulty**: Harder for developers unfamiliar with the architecture.
+
+## 🏛️ Monolithic Architecture
+
+### 📜 Overview
+Monolithic architecture creates a single, self-contained application where components are tightly connected. It's simple to develop and deploy but can become challenging to scale and maintain as complexity grows.
+
+### ✅ Advantages
+- **Simplicity**: Easy to understand and implement with a single codebase.
+- **Ease of Deployment**: Simple to deploy as a single package.
+- **Ease of Testing**: Easier to test due to closely interconnected components.
+- **Better Performance**: Typically performs better due to strong connections.
+
+### ❌ Disadvantages
+- **Difficulty Scaling**: Hard to scale as complexity increases.
+- **Difficulty Maintaining**: Challenging to maintain with tightly coupled components.
+- **Limited Flexibility**: Hard to reuse or repurpose individual components.
+- **Technology Commitment**: Requires commitment to a specific technology stack.
+
+### 📅 When to Use
+Best for small or medium-sized applications that don't require high scalability or frequent updates. As complexity grows, consider other architectures like microservices or serverless.
+
+
+## 🏗️ Microservices Architecture
+
+### 📜 Overview
+Microservices architecture divides an application into smaller, independent components called microservices. This design pattern improves scalability, maintainability, and flexibility by allowing independent development, testing, and deployment of components.
+
+### 🧩 Components
+- **Microservices**: Independent components performing specific functions, communicating through APIs.
+- **API Gateway**: Routes client requests to the appropriate microservice, handling tasks like authentication and rate limiting.
+- **Service Registry**: Maintains a list of available microservices and their statuses.
+- **Load Balancer**: Distributes incoming requests across multiple instances of a microservice.
+- **Database**: Each microservice typically has its own database for independence and scalability.
+
+### ✅ Advantages
+- **Scalability**: Easier to scale individual microservices without affecting others.
+- **Maintainability**: Independent updates and modifications without impacting the entire application.
+- **Flexibility**: Reuse or repurpose microservices for other projects.
+- **Ease of Testing**: Test individual microservices independently, saving time and effort.
+
+### ❌ Disadvantages
+- **Complexity**: More complex to develop and deploy due to the need for coordination and communication between microservices.
+- **Increased Overhead**: More overhead in coordinating and communicating between microservices.
+- **Difficulty Debugging**: Harder to debug problems due to the distributed nature of microservices.
+
+### 📅 When to Use
+Best for large, complex applications requiring high scalability and maintainability. Suitable for applications expected to grow and evolve over time. Not ideal for small or medium-sized systems that don't require highly scalable or complex architecture.
+
+| Non-Functional Requirement | Monolithic | Microservices |
+|----------------------------|------------|---------------|
+| **Complexity** | Monolithic architecture is generally simpler to understand and implement than microservices architecture, because all of the components of the application are contained in a single codebase. | Microservices architecture, on the other hand, involves breaking the application down into smaller, independent components, or "microservices," which can be more complex to develop and deploy. |
+| **Scalability** | Monolithic architecture can be more difficult to scale than microservices architecture because all of the components of the application are tightly coupled and interdependent. This means that changes to one component can affect the others, which can make it difficult to add new features or scale the application without significantly modifying the entire codebase. | In contrast, microservices architecture is designed to be more scalable—the independent microservices can be scaled up or down as needed without affecting the rest of the application. |
+| **Maintainability** | Monolithic architecture can be more difficult to maintain than microservices architecture, because all of the components of the application are tightly coupled and interdependent. This means that changes to one component can affect the others, which can make it difficult to update or modify the application without significantly modifying the entire codebase. | In contrast, microservices architecture is designed to be more maintainable—the independent microservices can be updated or modified without affecting the rest of the application. |
+| **Flexibility** | Monolithic architecture can be less flexible than microservices architecture, because it’s more difficult to reuse or repurpose individual components for other projects. This can limit the flexibility of the application and make it more difficult to adapt to changing requirements or technologies. | In contrast, microservices architecture is designed to be more flexible—the independent microservices can be more easily reused or repurposed for other projects. |
+
+---
+## 🏗️ Migrating from Monolithic to Microservices
+
+### 📜 Overview
+Migrating from monolithic architecture to microservices architecture involves breaking down a large, complex application into smaller, independent components. This process improves scalability, maintainability, and flexibility but requires careful planning and execution.
+
+### 🛠️ Steps for Migrating
+
+1. **Assess the Current Architecture**: Identify the components and their interconnections in the current architecture.
+2. **Identify Microservices**: Divide the application into smaller, self-contained components based on functionality and dependencies.
+3. **Design the New Architecture**: Plan how the microservices will communicate with each other.
+4. **Implement the New Architecture**: Develop and test the microservices, and set up the necessary infrastructure.
+5. **Migrate Data and Functionality**: Move data and functionality from the monolithic architecture to the new microservices architecture.
+
+### 🌟 Considerations
+
+- **Testing**: Thoroughly test the new architecture to ensure proper functionality and data migration.
+- **Cost**: Be aware of the significant redesign and development costs involved.
+- **Complexity**: Plan carefully to manage the increased complexity of microservices architecture.
+- **Time**: Allocate sufficient time for the migration process, especially for large and complex applications.
+
+
+## 🏗️ Micro-Frontends
+
+### 📜 Overview
+Micro-frontends architecture divides the frontend of a website or application into smaller, independent components, or "micro-frontends," that can be created and deployed individually. This approach is similar to microservices architecture but applied to the frontend.
+
+### ✅ Advantages
+- **Scalability**: Easier to scale as changes to one micro-frontend don’t affect others.
+- **Maintainability**: Independent updates and modifications without affecting the rest of the application.
+- **Flexibility**: Reuse or repurpose individual micro-frontends for other projects.
+- **Ease of Testing**: Easier to test individual micro-frontends than the entire frontend.
+
+### ❌ Disadvantages
+- **Complexity**: More complex to develop and deploy due to the need for coordination and communication between micro-frontends.
+- **Increased Overhead**: More overhead in coordinating and communicating between micro-frontends.
+- **Difficulty Debugging**: Harder to debug problems due to interactions between multiple micro-frontends.
+
+### 🔄 Comparison: Micro-Frontends vs. Microservices
+
+| Non-Functional Requirement | Micro-Frontends | Microservices |
+|----------------------------|-----------------|---------------|
+| **Focus** | Breaking down a monolithic frontend into smaller, loosely coupled components. | Breaking down a monolithic backend into smaller, loosely coupled services. |
+| **Scalability** | Improves the scalability and maintainability of the frontend. | Improves the scalability and maintainability of the backend. |
+| **Performance** | Can lead to better performance and faster deployment cycles. | Can lead to better performance and faster deployment cycles. |
+| **Independence** | Each component can be developed and deployed independently. | Each service can be developed and deployed independently. |
+| **Communication** | Typically communicates with APIs to access shared data and services. | Typically communicates using lightweight, standardized protocols such as REST or gRPC. |
+| **Complexity** | Can result in a more complex front-end architecture with more inter-component communication. | Can result in a more complex back-end architecture with more inter-service communication. |
+
+### 📅 When to Use
+Micro-frontend design is best suited for large, sophisticated applications that demand high front-end scalability and maintainability. It might not be the best option for small or medium-sized applications that don’t require highly scalable or complex front-end architecture.
