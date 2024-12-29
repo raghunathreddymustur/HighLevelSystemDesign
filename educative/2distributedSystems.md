@@ -244,6 +244,229 @@ As a last note, it’s easy to see that we can easily implement at-most-once del
 [Realtime Implementation](#idempotency-implementation)
 
 
+Sure, here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in bold text:
+
+---
+
+# 📉 Failure in the World of Distributed Systems
+Let's see why failures occur in distributed systems, and how we can detect them. We'll cover the following:
+- One reason for failure
+- One mechanism to detect failure
+- Trade-off for the small timeout value
+- Trade-off for the large timeout value
+- Failure detector
+- Properties that categorize failure detectors
+- A perfect failure detector
+
+## ⚠️ One reason for failure
+The **asynchronous nature of the network** in a distributed system can make it very hard for us to differentiate between a crashed node and a node that is just really slow to respond to requests.
+
+## 🔍 One mechanism to detect failure
+**Timeouts** is the main mechanism we can use to detect failures in distributed systems. Since an asynchronous network can infinitely delay messages, timeouts impose an artificial upper bound on these delays. As a result, we can assume that a node fails when it is slower than this bound.
+
+## ⚖️ Trade-off for the small timeout value
+If we select a **smaller value for the timeout**, our system will waste less time waiting for the nodes that have crashed. At the same time, the system might declare some nodes that have not crashed dead, while they are actually just a bit slower than expected.
+
+## ⚖️ Trade-off for the large timeout value
+If we select a **larger value for the timeout**, the system will be more lenient with slow nodes. At the same time, the system will be slower in identifying crashed nodes, in some cases wasting time while waiting for them.
+
+## 🛠️ Failure detector
+A **failure detector** is the component of a node that we can use to identify other nodes that have failed. This component is essential for various algorithms that need to make progress in the presence of failures.
+
+## 📊 Properties that categorize failure detectors
+We can distinguish the different categories of failure detectors through two basic properties that reflect the trade-off:
+- **Completeness** corresponds to the percentage of crashed nodes a failure detector successfully identifies in a certain period.
+- **Accuracy** corresponds to the number of mistakes a failure detector makes in a certain period.
+
+## 🌟 A perfect failure detector
+A **perfect failure detector** is the one with the strongest form of completeness and accuracy. That is, it is one that successfully detects every faulty process without ever assuming a node has crashed before it actually does. As expected, it is impossible to build a perfect failure detector in purely asynchronous systems.
+
+---
+
+Sure, here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in bold text:
+
+---
+
+# 🖥️ Stateless and Stateful Systems
+Let's see the difference between stateless and stateful systems. We'll cover the following:
+- Stateless system
+- Examples
+- Stateful systems
+- Example
+- Some interesting observations
+- Benefits of stateless systems over stateful systems
+
+## 📊 Stateless system
+A **stateless system** maintains no state of what happened in the past and performs its capabilities purely based on the inputs we provide to it.
+
+## 📈 Examples
+A contrived stateless system receives a set of numbers as input, calculates their maximum, and returns it as a result. These inputs are either direct or indirect. Direct inputs are included in the request, while indirect inputs are potentially received from other systems to fulfill the request. Imagine a service that calculates the price of a specific product by retrieving its initial price and any currently available discounts from some other services, and then performing the necessary calculations with this data. This service is still stateless.
+
+## 🗂️ Stateful systems
+**Stateful systems** are responsible for maintaining and mutating a state. Their results depend on this state.
+
+## 📋 Example
+Imagine a system that stores the ages of all the employees of a company, and we can ask it the maximum age. This system is stateful since the result depends on the employees we register in it.
+
+## 💡 Some interesting observations
+Stateful systems are beneficial in real life because computers are much more capable than humans of storing and processing data. Maintaining state involves additional complexity. For example, we must decide what’s the most efficient way to store and process it, how to perform back-ups, etc. As a result, it’s usually wise to create an architecture that contains clear boundaries between stateless components (which perform business capabilities) and stateful components (which handle data).
+
+## 🌟 Benefits of stateless systems over stateful systems
+**Stateless distributed systems** are much easier to design, build, and scale, compared to stateful ones. The main reason for this is that we consider all the nodes (e.g., servers) of a stateless system identical. This makes it a lot easier for us to balance traffic between them, and scale by adding or removing servers. However, stateful systems present many more challenges. As different nodes can hold different pieces of data, they require additional work. They need to direct traffic to the right place and ensure each instance is in sync with the others. As a result, some of the course’s examples include stateless systems. However, the most challenging problems we cover in this course mainly concern stateful systems.
+
+---
+
+Sure, here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in bold text:
+
+---
+
+# 📊 Partitioning
+See how we can make our system scalable by partitioning. We'll cover the following:
+- Scalability
+- Mechanism to achieve scalability
+- Partitioning
+- Vertical partitioning
+- Horizontal partitioning
+- Limitations of partitioning
+
+## 📈 Scalability
+**Scalability** lets us store and process datasets much larger than what we could with a single machine.
+
+## 🛠️ Mechanism to achieve scalability
+One of the primary mechanisms of achieving scalability is **partitioning**.
+
+## 📂 Partitioning
+**Partitioning** is the process of splitting a dataset into multiple, smaller datasets, and then assigning the responsibility of storing and processing them to different nodes of a distributed system. This allows us to add more nodes to our system and increase the size of the data it can handle.
+
+## 📊 Vertical partitioning
+**Vertical partitioning** involves splitting a table into multiple tables with fewer columns and using additional tables to store columns that relate rows across tables. We commonly refer to this as a join operation. We can then store these different tables in different nodes. Normalization is one way to perform vertical partitioning. However, general vertical partitioning goes far beyond that: it splits a column, even when they are normalized.
+
+## 📊 Horizontal partitioning
+**Horizontal partitioning** involves splitting a table into multiple, smaller tables, where each table contains a percentage of the initial table’s rows. We can then store these different subtables in different nodes. We can perform this split through multiple strategies. A simplistic approach for this is an alphabetical split. For instance, we can horizontally partition a table that contains the students of a school by using the students’ surnames.
+
+## ⚖️ Limitations of partitioning
+In a vertically partitioned system, requests that need to combine data from different tables (i.e., join operations) become less efficient. This is because these requests may now have to access data from multiple nodes. In a horizontally partitioned system, we can usually avoid accessing data from multiple nodes because all the data for each row is located in the same node. However, we may still need to access data from multiple nodes for requests that are searching for a range of rows that belong to multiple nodes. Another important implication of horizontal partitioning is the potential for loss of transactional semantics. When we store data in a single machine, we can easily perform multiple operations in an atomic way, where either all or none of them succeed. However, this is much harder to achieve in a distributed system. As a result, it’s much harder to perform atomic operations—when partitioning data horizontally—over data that resides in different nodes. This is a common theme in distributed systems; there’s no silver bullet. We have to make trade-offs to achieve the property we desire. Vertical partitioning is mainly a data modeling practice, which can be performed by the engineers designing a system—sometimes independently of the storage systems used. However, horizontal partitioning is a common feature of distributed databases. So, to use these systems properly, engineers need to know how the system works under the hood. Therefore, we will mostly focus on horizontal partitioning.
+
+---
+
+Sure, here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in bold text:
+
+---
+
+# 🧩 Algorithms for Horizontal Partitioning
+Let's look into the algorithms used for horizontal partitioning. We'll cover the following:
+- Range partitioning
+- Hash partitioning
+- Consistent hashing
+
+## 📊 Range partitioning
+**Range partitioning** is a technique where we split a dataset into ranges according to the value of a specific attribute. We then store each range in a separate node. For example, an alphabetical split of last names.
+
+## 🌟 Advantages of range partitioning
+Some advantages of range partitioning include:
+- **Simplicity and ease of implementation**
+- The ability to perform range queries using the partitioning key value
+- Good performance for small range queries that reside in a single node
+- Easier and more efficient repartitioning by adjusting ranges
+
+## ⚠️ Disadvantages of range partitioning
+Some disadvantages of range partitioning include:
+- Inability to perform range queries using keys other than the partitioning key
+- Poor performance for large range queries that span multiple nodes
+- Uneven distribution of traffic or data, causing some nodes to overload
+
+## 🔄 Hash partitioning
+**Hash partitioning** is a technique where we apply a hash function to a specific attribute of each row, resulting in a number that determines which partition—and thus, node—this row belongs to.
+
+## 🌟 Advantages of hash partitioning
+Some advantages of hash partitioning include:
+- **Runtime calculation of partitioning mapping** without needing to store and maintain the mapping
+- Uniform distribution of data across nodes, preventing overload
+
+## ⚠️ Disadvantages of hash partitioning
+Some disadvantages of hash partitioning include:
+- Inability to perform range queries without additional data or querying all nodes
+- Significant data movement across nodes when adding or removing nodes
+
+## 🔄 Consistent hashing
+**Consistent hashing** is a partitioning technique similar to hash partitioning but solves the increased data movement problem. Each node is randomly assigned an integer in a range, and data is assigned based on this range.
+
+## 🌟 Advantages of consistent hashing
+The main advantage of consistent hashing is **reduced data movement** when nodes are added or removed.
+
+## ⚠️ Disadvantages of consistent hashing
+Some disadvantages of consistent hashing include:
+- Potential for nonuniform data distribution due to random node assignment
+- Imbalanced data distribution as nodes are added or removed
+
+---
+
+Sure, here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in bold text:
+
+---
+
+# 🔄 Replication
+Learn what replication is and why it is used in distributed systems. We'll cover the following:
+- Partitioning
+- Availability
+- Mechanism to achieve availability
+- Replication
+- Pessimistic replication
+- Optimistic replication
+
+## 📊 Partitioning
+**Partitioning** can improve the scalability and performance of a system by distributing data and request load to multiple nodes.
+
+## 🌟 Availability
+**Availability** refers to the ability of the system to remain functional despite failures in parts of it.
+
+## 🛠️ Mechanism to achieve availability
+The technique we use to achieve availability is **replication**.
+
+## 🔄 Replication
+**Replication** is the main technique used in distributed systems to increase availability. It consists of storing the same piece of data in multiple nodes (called replicas) so that if one of them crashes, data is not lost, and requests can be served from the other nodes in the meanwhile.
+
+## ⚠️ Complications of replication
+The benefit of increased availability from replication comes with a set of new complications. Replication implies that the system now has multiple copies of every piece of data. These copies must be maintained and kept in sync with each other on every update.
+
+## 🧩 Pessimistic replication
+**Pessimistic replication** tries to guarantee from the beginning that all the replicas are identical to each other—as if there was only one copy of the data all along.
+
+## 🌟 Optimistic replication
+**Optimistic replication**, or lazy replication, allows the different replicas to diverge. This guarantees that they will converge again if the system does not receive any updates, or enters a quiesced state, for a period of time.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,9 +486,6 @@ As a last note, it’s easy to see that we can easily implement at-most-once del
 
 
 # Realtime Implementation
-
-
-
 
 # Idempotency Implementation
 
@@ -376,3 +596,4 @@ Challenges include managing concurrency, ensuring unique identifiers, maintainin
 
 ## 📌 Conclusion
 Idempotency is a fundamental principle for building robust and reliable microservices. By leveraging Spring Boot's features, adopting best practices, and addressing challenges, developers can create systems that handle retries gracefully, maintain data consistency, and provide a seamless user experience.
+
