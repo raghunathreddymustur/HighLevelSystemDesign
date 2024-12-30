@@ -436,11 +436,168 @@ The benefit of increased availability from replication comes with a set of new c
 **Optimistic replication**, or lazy replication, allows the different replicas to diverge. This guarantees that they will converge again if the system does not receive any updates, or enters a quiesced state, for a period of time.
 
 ---
+Sure thing! Here's the updated README without the last line:
+
+---
+
+### 📚 Primary-Backup Replication Algorithm
+Learn about primary-backup replication, and its practical application, advantages, and disadvantages.
+
+### 🔄 Primary-backup replication
+Primary-backup replication is a technique where we designate a single node amongst the replicas as the leader, or primary, that receives all the updates. This technique is also known as single-master replication. We commonly refer to the remaining replicas as followers or secondaries. These can only handle read requests. Every time the leader receives an update, it executes it locally and also propagates the update to the other nodes. This ensures that all the replicas maintain a consistent view of the data.
+
+### 🔄 Techniques for propagating updates
+There are two ways to propagate the updates: synchronously and asynchronously.
+
+### ⏳ Synchronous replication
+In synchronous replication, the node replies to the client to indicate the update is complete—only after receiving acknowledgments from the other replicas that they’ve also performed the update on their local storage. This guarantees that the client is able to view the update in a subsequent read after acknowledging it, no matter which replica the client reads from. Furthermore, synchronous replication provides increased durability. This is because the update is not lost even if the leader crashes right after it acknowledges the update. However, this technique can make writing requests slower. This is because the leader has to wait until it receives responses from all the replicas.
+
+### ⏳ Asynchronous replication
+In asynchronous replication, the node replies to the client as soon as it performs the update in its local storage, without waiting for responses from the other replicas. This technique increases performance significantly for write requests. This is because the client no longer pays the penalty of the network requests to the other replicas. However, this comes at the cost of reduced consistency and decreased durability. After a client receives a response for an update request, the client might read older (stale) values in a subsequent read. This is only possible if the operation happens in one of the replicas that have not yet performed the update. Moreover, if the leader node crashes right after it acknowledges an update, and the propagation requests to the other replicas are lost, any acknowledged update is eventually lost.
+
+### 📊 Advantages of primary-backup replication
+- **Simple to understand and implement**
+- **Concurrent operations serialized in the leader node remove the need for more complicated, distributed concurrency protocols**
+- **Scalable for read-heavy workloads because the capacity for reading requests can be increased by adding more read replicas**
+
+### 📉 Disadvantages of primary-backup replication
+- **Not very scalable for write-heavy workloads because a single node’s capacity (the leader’s capacity) determines the capacity for writes**
+- **Imposes an obvious trade-off between performance, durability, and consistency**
+- **Scaling the read capacity by adding more follower nodes can create a bottleneck in the network bandwidth of the leader node, if there’s a large number of followers listening for updates**
+- **The process of failing over to a follower node when the leader node crashes is not instant. This may create some downtime and also introduce the risk of errors**
+
+### 🔄 Failover
+Failover is when the leader node crashes and a follower node takes over.
+
+### 🔄 Managing failover
+In general, there are two approaches to perform a failover: manual and automated.
+
+### 🛠️ Manual approach
+In the manual approach, the operator selects the new leader node and instructs all the nodes accordingly. This is the safest approach, but it incurs significant downtime.
+
+### ⚙️ Automated approach
+An alternative is an automated approach, where follower nodes detect that the leader node has crashed (e.g., via periodic heartbeats), and attempt to elect a new leader node. This is faster but is quite risky. This is because there are many different ways in which the nodes can get confused and arrive at an incorrect state.
+
+---
+
+Sure thing! Here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in **bold**:
+
+---
+
+### 📚 Multi-Primary Replication Algorithm
+Look at the multi-primary algorithm for replication.
+
+### 🔄 Primary-backup replication
+As we saw in the previous lesson, primary-backup replication is a technique that is easy to implement and operate. It can easily support transactions and hide the distributed nature of the underlying system, i.e., when using synchronous replication. However, primary-backup replication has some limitations in terms of performance, scalability, and availability. As we’ve already discussed, there are many applications where availability and performance are much more important than data consistency or transactional semantics. A frequently cited example is that of an e-commerce shopping cart, where the most important thing is for customers to be able to access their cart at all times and add items quickly and easily. It is acceptable to compromise consistency to achieve this, as long as there is data reconciliation at some point. For instance, if two replicas diverge because of intermittent failures, the customer can still resolve conflicts during the checkout process.
+
+### 🔄 Multi-primary replication
+Multi-primary replication is an alternative replication technique that favors higher availability and performance over data consistency. This technique is also known as multi-master replication. In this technique, all replicas are equal and can accept write requests. They are also responsible for propagating the data modifications to the rest of the group. Multi-primary replication has a significant difference from primary-backup replication. In multi-primary replication, there is no single leader node that serializes the requests and imposes a single order, as write requests are concurrently handled by all the nodes. This means that nodes might disagree on what is the right order for some requests. We usually refer to this as a conflict. For the system to remain operational, the nodes need to resolve this conflict when it occurs by agreeing on a single order from the available ones.
+
+### 🔄 Conflict resolution
+There are many different ways to resolve conflicts, depending on the guarantees the system wants to provide. An important aspect of different approaches to resolving conflicts is whether they do it eagerly or lazily. In the eagerly case, the conflict is resolved during the write operation. In the lazily case, the write operation proceeds to maintain multiple, alternative versions of the data record that are eventually resolved to a single version later on, i.e., during a subsequent read operation.
+
+### 🛠️ Approaches to conflict resolution
+Here are some common approaches to conflict resolution:
+
+- **Exposing conflict resolution to the clients**: When there is a conflict, the multiple available versions return to the client. The client then selects the right version and returns it to the system. This resolves the conflict. An example of this is the shopping cart application, where the customer selects the correct version of their cart.
+- **Last-write-wins conflict resolution**: Each node in the system tags each version with a timestamp, using a local clock. During a conflict, the version with the latest timestamp is selected. However, this technique can lead to some unexpected behaviors, as there is no global notion of time. For example, write A can override write B, even though B happened “as a result” of A.
+- **Causality tracking algorithms**: The system uses an algorithm that keeps track of causal relationships between different requests. When there is a conflict between two writes (A, B) and one is determined to be the cause of the other one (suppose A is the cause of B), then the resulting write (B) is retained. However, there can still be writes that are not causally related, i.e., requests are actually concurrent. In such cases, the system cannot make an easy decision. We’ll elaborate more on some of these approaches later in the chapters about time and order.
+
+---
+Sure thing! Here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in **bold**:
+
+---
+
+### 📚 Quorums in Distributed Systems
+Look at the concept of quorums and see how they solve low availability problems in synchronous replication.
+
+### 🔄 Main Pattern
+The main pattern we’ve seen so far is this: writes are performed to all the replica nodes, while reads are performed to one of them. When we ensure that writes are performed to all of them synchronously before replying to the client, we guarantee that the subsequent reads see all the previous writes—regardless of the node that processes the read operation.
+
+### 🔄 Write and Read Requests
+While one node receives a write request in either of the replication algorithms discussed earlier, the data is updated on all the nodes as a result of this request. Similarly, when a node receives a read request, it reads it from its local storage rather than performing a read on all the nodes. In the case of multi-primary replication, reads may be performed on all the nodes to handle write conflicts, but that is one possible solution and can’t be generalized as a pattern.
+
+### 📉 Problem in Synchronous Replication
+Availability is quite low for write operations because the failure of a single node makes the system unable to process writes until the node recovers.
+
+### 🛠️ Possible Solution
+To solve this problem, we can use the reverse strategy. That is, we write data only to the node that is responsible for processing a write operation, but process read operations by reading from all the nodes and returning the latest value. **This increases the availability of writes significantly but decreases the availability of reads at the same time. So, we have a trade-off that needs a mechanism to achieve a balance. Let’s see that mechanism.**
+
+### 🔄 Quorums
+A useful mechanism to achieve a balance in this trade-off is to use quorums.
+
+### 🛠️ Example of Quorums
+In a system of three replicas, we can say that writes need to complete in two nodes (as a quorum of two), while reads need to retrieve data from two nodes. This way, we can be sure that the reads will read the latest value. This is because at least one of the nodes in the read quorum will also be included in the latest write quorum. This is based on the fact that in a set of three elements, two subsets of two elements must have at least one common element.
+
+### 📜 Quorum-Based Voting Protocol
+A past paper introduced this technique as a quorum-based voting protocol for replica control. In general, in a system that has a total of V replicas, every read operation should obtain a read quorum of V_r replicas. Meanwhile, a write operation should obtain a write quorum of V_w replicas. The values of these quorums should obey the following properties:
+- **V_r + V_w > V**
+- **V_w > V / 2**
+
+### 📊 Ensuring Data Consistency
+The first rule ensures that a data item is not read and written by two operations concurrently. The second rule ensures that at least one node receives both of the two write operations and imposes an order on them. This means that two write operations from two different operations cannot occur concurrently on the same data item. Both of the rules together guarantee that the associated distributed database behaves as a centralized, one-replica database system.
+
+### 🔄 Use of Quorums
+The concept of a quorum is really useful in distributed systems that have multiple nodes. The concept of a quorum is used extensively in other areas, like distributed transactions or consensus protocols.
+
+<details>
+<summary>Rationale Why Availability is effected</summary>
+
+### 📉 Problem in Synchronous Replication
+In the context of synchronous replication, availability is a problem because the system requires all replicas to acknowledge a write operation before it can be considered complete. This means that if even one replica is unavailable or slow to respond, the entire write operation is delayed or fails. This dependency on all replicas being available and responsive reduces the overall availability of the system for write operations.
+
+**Key Points:**
+- **Synchronous Replication**: Requires all replicas to acknowledge a write before completion.
+- **Availability Issue**: If one replica is down or slow, the write operation is delayed or fails.
+- **Performance Trade-off**: While synchronous replication ensures data consistency, it sacrifices availability for write operations.
+
+**Example:**
+Imagine a system with three replicas. In synchronous replication, a write operation must be acknowledged by all three replicas. If one replica is down, the write operation cannot be completed, reducing the system's availability for writes. This is why availability is a problem in synchronous replication, rather than performance.
+
+By using quorums, we can balance this trade-off by allowing a subset of replicas to acknowledge the write operation, thus improving availability while still maintaining a level of consistency.
+</details>
+---
 
 
 
+Sure thing! Here's a summary of each paragraph from the current page, with meaningful icons before headings and important sections highlighted in **bold**:
 
+---
 
+### 🔒 Safety Guarantees in Distributed Systems
+Explore the properties that guarantee safety in distributed systems and their relation to the difficulties in designing these systems.
+
+### 🔄 Importance of Safety Guarantees
+Since distributed systems involve a lot of complexity, some safety guarantees ensure that the system will behave in specific, predictable ways. This makes it easier for people to reason about a system and any potential anomalies that can occur. This will allow them to build proper safeguards to prevent these anomalies from occurring.
+
+### 🛡️ Safety Guarantors
+The main safety guarantees that systems provide are around the three properties shown in the illustration:
+- **Atomicity**
+- **Consistency**
+- **Isolation**
+
+### 📜 Properties that Guarantee Safety in Distributed Systems
+Three properties guarantee safety in a distributed system:
+- **Atomicity**
+- **Consistency**
+- **Isolation**
+
+### 📚 Origin of Concepts
+The concepts of atomicity and isolation originate from database research and ACID transactions. When we mention consistency in this course, we will mostly refer to the notion of consistency made popular by the CAP theorem. Before going any further, it is useful to look at these topics. We will study these two topics in detail in the next two lessons.
+
+### 🔄 Relation to Design Challenges
+It is interesting to observe that each of these safety guarantees is tightly related to the aforementioned reasons that make distributed systems hard to design.
+
+### ⚙️ Achieving Atomicity
+It is challenging to achieve atomicity in a distributed system because of the possibility of partial failures. A partial failure occurs when some components in the system fail.
+
+### 🔄 Achieving Consistency
+It is challenging to achieve consistency because of network asynchrony. Network asynchrony occurs when different nodes in a network have different values for the current time.
+
+### 🔄 Achieving Isolation
+It is challenging to achieve isolation because of the inherent concurrency of distributed systems. Concurrency occurs when multiple things happen at the same time.
+
+---
 
 
 
