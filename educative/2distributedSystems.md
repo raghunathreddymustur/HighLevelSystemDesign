@@ -598,6 +598,43 @@ It is challenging to achieve consistency because of network asynchrony. Network 
 It is challenging to achieve isolation because of the inherent concurrency of distributed systems. Concurrency occurs when multiple things happen at the same time.
 
 ---
+Sure, here's a summary of each paragraph from the current page, with meaningful icons and important sections highlighted in **bold**:
+
+### 📜 The CAP Theorem
+The CAP Theorem is one of the most fundamental theorems in the field of distributed systems. It outlines an inherent trade-off in the design of distributed systems.
+
+### 📜 Initial statement of the CAP theorem
+According to the initial statement of the CAP theorem, it is impossible for a distributed data store to provide more than two of the following properties simultaneously: **consistency**, **availability**, and **partition tolerance**.
+
+### 📜 Consistency
+Consistency means that every successful read request receives the result of the most recent write request. The concept of consistency in the CAP theorem is different from the concept of consistency in ACID transactions.
+
+### 📜 Availability
+Availability means that every request receives a non-error response, without any guarantees on whether it reflects the most recent write request.
+
+### 📜 Partition Tolerance
+Partition tolerance means that the system can continue to operate despite an arbitrary number of messages being dropped by the network between nodes due to a network partition. **Partition tolerance is not a property we can abandon**.
+
+### 📜 Final statement of the CAP theorem
+According to the final statement of the CAP theorem, a distributed system can be either consistent or available in the presence of a network partition.
+
+### 📜 Proof
+The proof of the CAP theorem involves a distributed system consisting of two nodes. If there is a network failure that results in a network partition, the system has two options: fail one of the operations and break the availability property, or process both operations and break the consistency property.
+
+### 📜 Importance of the CAP theorem
+The CAP theorem is important because it helped establish the basic limitations of all distributed systems. It forces designers to make explicit trade-offs between **availability** and **consistency**.
+
+### 📜 Categorization of distributed systems based on the CAP theorem
+Distributed systems are usually classified into two basic categories: **CP** (Consistency and Partition tolerance) and **AP** (Availability and Partition tolerance). This classification depends on which property the system violates during a network partition.
+
+### 📜 Trade-off between latency and consistency
+When no network partition is present, there’s a trade-off between **latency** and **consistency**. To guarantee data consistency, the system will have to delay write operations until the data has been propagated across the system successfully, thus taking a latency hit.
+
+### 📜 PACELC theorem
+The PACELC theorem is an extension of the CAP theorem. It states that in the case of a network partition (P), the system has to choose between availability (A) and consistency (C), but else (E), when the system operates normally, it has to choose between latency (L) and consistency (C).
+
+### 📜 Categorization of distributed systems based on PACELC theorem
+Each branch of the PACELC theorem creates two sub-categories of systems: **AP/EL** (Availability during partition, Latency during normal operation) and **CP/EC** (Consistency during partition, Consistency during normal operation). Most systems fall into the AP/EL or CP/EC categories.
 
 
 
