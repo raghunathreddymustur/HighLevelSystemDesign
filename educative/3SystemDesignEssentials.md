@@ -371,3 +371,363 @@ Different scalability approaches have **trade-offs**, and the best approach depe
 - **Horizontal Scaling** provides **flexibility** but requires **distributed computing strategies**.
 
 Choosing the right scalability approach ensures **efficient system performance** even as demands **grow over time**. 🚀
+
+## 🛠️ Maintainability
+
+Understand **maintainability**, how to **measure** it, and its **relationship with reliability**.
+
+### 📖 What is Maintainability?
+Beyond building a system, one of the **key tasks** is ensuring it remains **operational** over time. Maintainability involves:
+- **Finding and fixing bugs**.
+- **Adding new functionalities**.
+- **Keeping the system platform updated**.
+- **Ensuring smooth operations**.
+
+A well-designed system should be **highly maintainable** to minimize downtime and support future modifications.
+
+### 🔎 Core Aspects of Maintainability
+Maintainability can be categorized into three aspects:
+
+- **⚙️ Operability** – The ease with which the system can be maintained under **normal conditions** and after **fault recovery**.
+- **🧩 Lucidity** – Simplicity of the code base. **Clearer code** makes maintenance **easier** and **efficient**.
+- **🔄 Modifiability** – The ability of the system to **seamlessly integrate** new features and modifications **without disruptions**.
+
+---
+
+## 📏 Measuring Maintainability
+
+Maintainability (**M**) represents the **probability** that a system restores its functionality within a given timeframe.
+
+For example:
+- A component with a **maintainability value of 95% for 30 minutes** means there’s a **95% chance** it will be **fully restored within half an hour** after failure.
+
+### 🔢 Key Metric: Mean Time to Repair (MTTR)
+Maintainability is measured using **Mean Time to Repair (MTTR)**:
+
+## ⚙️ Fault Tolerance
+
+Understand **fault tolerance**, its importance, and how to measure it.
+
+### 📖 What is Fault Tolerance?
+**Fault tolerance** is a system’s ability to continue operating even if **one or more components fail**. These components may be **hardware or software**.
+
+Since achieving **100% fault tolerance** is impractical, systems implement techniques to **reduce failures** and **ensure high availability**.
+
+### 🔑 Why Fault Tolerance Matters
+- **🛡️ Data Safety** – Prevents data loss due to failures.
+- **🚀 Availability** – Ensures services remain **accessible 24/7**.
+- **🔄 Reliability** – Guarantees proper functioning, taking **correct actions on requests**.
+
+---
+
+## 🔄 Fault Tolerance Techniques
+
+Failures can occur at the **hardware or software level**, impacting data and services. The following techniques help achieve fault tolerance in different system designs.
+
+### 📌 Replication-Based Fault Tolerance
+Replication ensures redundancy by **creating multiple copies** of services and data.
+- **🖥️ Swapping failed nodes** with healthy ones maintains service uptime.
+- **🗄️ Replicated storage** prevents data loss due to failures.
+
+**Challenges with Replication:**
+- **Consistency management** – Ensuring **all replicas update simultaneously**.
+- **Trade-offs** – Choosing between **strong consistency (synchronous updates)** vs. **eventual consistency (asynchronous updates)**.
+
+### 🔄 Checkpointing
+Checkpointing stores the system’s **state periodically**, allowing recovery after failures.
+
+**Types of Checkpointing States:**
+- ✅ **Consistent State** – All system processes hold **coherent snapshots** representing a stable execution.
+- ❌ **Inconsistent State** – Snapshots across processes **do not align**, leading to errors during recovery.
+
+Example:  
+Processes **i, j, and k** exchange messages **m1 and m2**.  
+A consistent checkpoint ensures:
+1. **Saved updates reflect completed actions**.
+2. **No messages are lost in transit**.
+3. **Processes align their snapshots to the same global state**.
+
+In contrast, an **inconsistent checkpoint** results in:
+- **Missing or conflicting data**.
+- **Processes failing to resume properly after recovery**.
+
+---
+
+## 📌 Summary
+
+Fault tolerance ensures systems operate **smoothly despite failures** using:
+- **Replication** – Creates redundant copies to replace failed components.
+- **Checkpointing** – Saves system state for recovery.
+- **Consistency trade-offs** – Balancing between **strong and eventual consistency**.
+
+By implementing fault tolerance strategies, engineers can **enhance reliability, availability, and data protection** in distributed systems. 🚀
+
+Here’s a well-structured **README.md** version of the extracted content with **meaningful icons**, **bold highlights**, and formatted sections using level two headings:
+
+## 🔢 Back-of-the-Envelope Calculations
+
+Understand the **importance of quick estimations** in system design.
+
+### 📖 What Are Back-of-the-Envelope Calculations?
+Back-of-the-envelope calculations help **ignore unnecessary details** and focus on **high-level estimates** that influence system design.
+
+These calculations assist in:
+- **Estimating resource needs** (e.g., storage or processing power).
+- **Analyzing system scalability**.
+- **Avoiding flawed design choices** based on unreasonable assumptions.
+
+Example calculations include:
+- **Number of concurrent TCP connections** a server can support.
+- **Requests per second (RPS)** a server can handle.
+- **Storage requirements for a large-scale system**.
+
+---
+
+## 🏗️ Types of Data Center Servers
+
+Data centers host **multiple types of servers** to manage different workloads efficiently.
+
+### 🖥️ Web Servers
+Web servers act as the **first point of contact** after load balancers. These servers handle **API requests** from clients.
+
+- **Computational resources** – High
+- **Memory & storage needs** – Low to medium
+- **Example**: Facebook's web server with **32GB RAM**, **500GB storage**, and **custom 16-core processor**.
+
+### 🔧 Application Servers
+Application servers run **business logic** and provide **dynamic content** to users.
+
+- **Computational & storage resources** – High
+- **Example**: Facebook's application servers with **256GB RAM** and storage of up to **6.5TB** (using rotating disks + flash storage).
+
+### 💾 Storage Servers
+Storage servers **manage structured and unstructured data** for large-scale applications.
+
+Examples of storage solutions:
+- **Blob storage** for YouTube’s video data.
+- **Bigtable** for storing video thumbnails.
+- **RDBMS** for metadata like comments, likes, and channels.
+
+Facebook storage servers can house **up to 120TB of data**, enabling **exabyte-scale storage**.
+
+---
+
+## ⏳ Important Latencies
+
+System designers must be aware of **latency numbers** to correctly estimate performance.
+
+| **Component** | **Time (Nanoseconds / Milliseconds)** |
+|--------------|-------------------|
+| L1 Cache | **0.9 ns** |
+| L2 Cache | **2.8 ns** |
+| L3 Cache | **12.9 ns** |
+| Main Memory | **100 ns** |
+| Read 1MB from SSD | **200μs** |
+| Disk Seek | **4ms** |
+| Sending Packet (SF -> NYC) | **71ms** |
+
+Understanding **latencies** enables better system performance optimization.
+
+---
+
+## 🔄 Requests Estimation
+
+Estimating **requests per second (RPS)** helps design scalable architectures.
+
+Two main types:
+- **CPU-bound requests** – Limited by available processing power.
+- **Memory-bound requests** – Limited by available RAM.
+
+### 🖥️ CPU-Bound Requests Calculation
+Formula:
+```
+RPS_CPU = (Number of CPU Threads) / (Task Time)
+```
+
+Example:
+- **72 CPU threads**
+- **200ms per request**
+```
+RPS_CPU = 72 / 0.2s = 360 RPS
+```
+Thus, **360 requests per second** can be processed.
+
+### 💾 Memory-Bound Requests Calculation
+Formula:
+```
+RPS_memory = (Total RAM / Memory per worker) * (1 / Task Time)
+```
+
+Example:
+- **240GB RAM**
+- **Each worker uses 300MB**
+- **50ms per request**
+```
+RPS_memory = (240GB / 300MB) * (1 / 0.05s) ≈ 16,000 RPS
+```
+Thus, **16,000 requests per second** can be processed.
+
+Combining both:
+- **50% CPU-bound requests**
+- **50% memory-bound requests**
+```
+  Total RPS = (360 / 2) + (16,000 / 2) = 8,180 ≈ 8,000 RPS
+```
+A system handling **mixed request types** may process up to **8,000 RPS**.
+
+---
+
+## 📌 Summary
+
+Back-of-the-envelope calculations help in **estimating key system parameters**:
+- **Types of data center servers** – Web, Application, Storage.
+- **Latency considerations** – Crucial for optimizing response times.
+- **RPS Estimation** – Helps in system scalability planning.
+
+By leveraging quick estimations, engineers can **avoid flawed designs** and **optimize system performance** effectively. 🚀
+
+Here’s a well-structured **README.md** version of the extracted content with **meaningful icons**, **bold highlights**, and formatted sections using level two headings:
+
+
+## 📊 Resource Estimation
+
+Understand **resource estimation**, including server, storage, and bandwidth calculations.
+
+### 📖 Introduction
+Now that we’ve established the basics, let's apply **back-of-the-envelope calculations** to estimate resources for large-scale services.
+
+We will explore:
+- **Estimating the number of servers required**.
+- **Calculating storage needs**.
+- **Determining bandwidth requirements**.
+
+---
+
+## 🖥️ Estimating the Number of Servers
+
+Let’s assume a **Twitter-like service** with the following:
+- **500 million daily active users (DAU)**.
+- **Each user makes 20 requests per day**.
+- **One commodity server handles 8,000 requests per second (RPS)**.
+
+### 📌 Calculations
+1. **Total daily requests**:  
+   ```
+    Total Requests = DAU × Requests per day
+    500M × 20 = 10 Billion requests/day
+   ```
+2. **Total requests per second**:  
+   ```
+    Total Requests per Second = Total Requests / Seconds in a Day
+    10B / 86,400 = ~115K RPS
+   ```
+3. **Required servers**:  
+   ```
+    Number of Servers = Total Requests per Second / RPS per Server
+    115K / 8K ≈ 15 servers
+   ```
+
+However, **this estimate is highly unrealistic**! Large services need millions of servers due to:
+- **Load distribution across multiple layers** (web, application, and storage servers).
+- **Redundant hardware ensuring high availability**.
+- **Different response times per request type**.
+
+Thus, more refined estimation techniques include:
+- **Queuing theory** for precise calculations.
+- **Prototyping and monitoring** in real-world scenarios.
+
+---
+
+## 💾 Estimating Storage Requirements
+
+Using Twitter as an example, let’s determine storage needs for new tweets.
+
+### 📌 Assumptions
+- **250M DAU**, posting **3 tweets per day**.
+- **10% contain images**, **5% contain videos**.
+- **Image size = 200 KB**.
+- **Video size = 3 MB**.
+- **Tweet text & metadata = 250 Bytes**.
+
+### 📊 Storage Calculations
+1. **Tweets per day**:
+   ```
+    250M × 3 = 750M tweets/day
+   ```
+    2. **Storage for tweet text**:
+   ```
+    750M × 250B = 187.5 GB/day
+   ```
+3. **Storage for images**:
+   ```
+    (750M × 10%) × 200KB = 15 TB/day
+   ```
+4. **Storage for videos**:
+   ```
+    (750M × 5%) × 3MB = 112.5 TB/day
+   ```
+5. **Total storage required**:
+   ```
+    187.5 GB + 15 TB + 112.5 TB ≈ 128 TB/day
+   ```
+
+6. **Annual storage estimation**:
+   ```
+    128 TB × 365 days = 46.72 PB/year
+   ```
+
+This highlights the **massive storage requirements** for services like Twitter, which need **efficient data management**.
+
+---
+
+## 🚀 Bandwidth Estimation
+
+To estimate bandwidth needs, consider **incoming and outgoing data**.
+
+### 📌 Incoming Traffic
+Since Twitter **stores 128 TB/day**, the incoming traffic must support:
+
+```
+  Bandwidth = (Storage per day × 8 bits per byte) / Total seconds per day
+  128 × 10¹² × 8 / 86,400 ≈ 12 Gbps
+```
+
+### 📌 Outgoing Traffic
+Each user views **50 tweets per day**, and considering **5% videos, 10% images**:
+
+1. **Tweets viewed per second**:
+   ```
+    (250M × 50) / 86,400 = ~145K tweets/sec
+   ```
+2. **Bandwidth for tweets**:
+   ```
+    145K × 250B × 8 = ~0.3 Gbps
+   ```
+3. **Bandwidth for images**:
+   ```
+    (145K × 10%) × 200KB × 8 = 23.2 Gbps
+   ```
+4. **Bandwidth for videos**:
+   ```
+    (145K × 5%) × 3MB × 8 = 174 Gbps
+   ```
+
+### 📈 Total bandwidth required:
+```
+Incoming: 12 Gbps
+Outgoing: 0.3 + 23.2 + 174 = ~197.5 Gbps
+Total Bandwidth ≈ 209.5 Gbps
+```
+
+Large-scale platforms need **hundreds of Gbps** to sustain user activity.
+
+---
+
+## 📌 Summary
+
+Resource estimation provides a **coarse-grained approach** for system design:
+- **Server estimation** considers total user requests but requires finer analysis.
+- **Storage requirements** account for user-generated content like tweets, images, and videos.
+- **Bandwidth calculations** reveal traffic demands based on daily user interactions.
+
+By leveraging **simplified back-of-the-envelope calculations**, engineers can set **reasonable upper bounds** for system capacity planning! 🚀
