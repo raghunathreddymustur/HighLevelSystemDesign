@@ -13,4 +13,4 @@
 
 ## Patterns
 
-## 
+[Ways to achieve](achievingNonFunctional/AchievingNonFun.md)
