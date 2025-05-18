@@ -10,6 +10,10 @@
 ## Problems
 
 1. [Key Value Store](problems/KeyValueStore/readme.md)
+2. [Unique ID Generator](problems/UniqueIDGenerator/readme.md)
+3. [Distributed Monitoring](problems/DistributedMonitoring/readme.md)
+4. [Distributed Cache](problems/DistributedCache/readme.md)
+5. [Distributed Messaging Queue](problems/DistributedMessagingQueue/readme.md)
 
 ## Patterns
 
