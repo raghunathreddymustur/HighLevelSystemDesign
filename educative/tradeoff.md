@@ -215,3 +215,49 @@ Here are some **trade-offs** mentioned in the current page regarding **Memcached
     - **Memcached** scales **horizontally** due to its **shared-nothing architecture**, making it easier to distribute across multiple servers.
     - **Redis** provides **scalability through clustering**, but this approach is **more complex** to configure.
 
+Here are some trade-offs mentioned in the **pub-sub system design**:
+
+### ⚖️ **Trade-offs in Pub-sub System Design**
+1. **Scalability vs. Complexity**
+   - A **pub-sub system** scales well with increasing topics and messages.
+   - However, managing **subscriptions, message routing, and retention policies** adds complexity.
+
+2. **Performance vs. Reliability**
+   - **Push-based distribution** improves performance by reducing latency.
+   - But ensuring **message durability** and **fault tolerance** requires additional infrastructure.
+
+3. **Decoupling vs. Message Ordering**
+   - Pub-sub **decouples producers and consumers**, allowing independent scaling.
+   - However, **message ordering** can be difficult to maintain, especially in distributed environments.
+
+4. **Flexibility vs. Overhead**
+   - Consumers can **subscribe to multiple topics**, making the system flexible.
+   - But **managing multiple subscriptions** increases processing overhead.
+
+5. **Retention vs. Storage Costs**
+   - Allowing consumers to **specify retention time** ensures they receive messages when needed.
+   - However, **longer retention periods** increase storage costs.
+
+Here are some trade-offs mentioned in the **pub-sub system design**:
+
+### ⚖️ **Trade-offs in Pub-sub System Design**
+1. **Scalability vs. Complexity**
+   - Using **distributed messaging queues** makes the design simple.
+   - However, maintaining **millions of queues** for thousands of topics is **expensive** and adds complexity.
+
+2. **Performance vs. Storage Overhead**
+   - Copying the same message into all subscriber queues leads to **unnecessary duplication** and **storage overhead**.
+   - An optimization approach using **message counters** can reduce storage needs.
+
+3. **Strict Ordering vs. Partitioning**
+   - **Partitioning topics** improves **availability and scalability**.
+   - However, ensuring **strict message ordering** across partitions requires additional mechanisms like **offset-based segmentation**.
+
+4. **Push vs. Pull Mechanism**
+   - **Push-based delivery** ensures consumers receive messages immediately.
+   - But **pull-based retrieval** allows consumers to control message consumption, avoiding overload.
+
+5. **Retention vs. Cost Efficiency**
+   - Consumers can specify **message retention periods** for flexibility.
+   - However, **longer retention times** increase storage costs.
+
