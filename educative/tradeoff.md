@@ -261,3 +261,40 @@ Here are some trade-offs mentioned in the **pub-sub system design**:
    - Consumers can specify **message retention periods** for flexibility.
    - However, **longer retention times** increase storage costs.
 
+The current page on rate limiters does not explicitly mention tradeoffs, but we can infer some potential ones based on the discussion.
+
+### ⚖️ Tradeoffs in Rate Limiter Design
+
+#### **✅ Reliability vs. ❌ Performance**
+Rate limiters enhance **service reliability** by preventing excessive load and ensuring fair resource allocation. However, enforcing limits can introduce **latency** since every request needs to be verified before processing.
+
+#### **✅ Security vs. ❌ Usability**
+Rate limiters **protect services** against **brute-force attacks** and **denial-of-service incidents**, but aggressive throttling can frustrate **legitimate users** if they frequently hit usage limits.
+
+#### **✅ Cost Control vs. ❌ User Experience**
+Organizations use rate limiters to **reduce excessive operational costs** (such as API overuse), but **strict rate limits** can degrade the experience for users relying on high-throughput interactions.
+
+#### **✅ Distributed Load vs. ❌ Complexity**
+Rate limiters **help distribute data processing loads** across multiple machines, preventing overburdening a single node. However, in **distributed systems**, implementing **global rate limiting** requires coordination, which adds complexity.
+
+Here are the tradeoffs mentioned in the current page regarding rate limiter design:
+
+### ⚖️ Tradeoffs in Rate Limiter Design
+
+#### **✅ Centralized Database vs. ❌ Latency & Race Conditions**
+A **centralized database** ensures that all rate limiters share a **single source of truth**, preventing clients from exceeding limits. However, this approach can introduce **latency issues** when handling a large number of requests and may lead to **race conditions** in highly concurrent environments.
+
+#### **✅ Distributed Database vs. ❌ Temporary Limit Violations**
+A **distributed database** allows each node to track rate limits independently, improving **scalability**. However, since state synchronization takes time, a client might **temporarily exceed the rate limit** before all nodes update their counters.
+
+#### **✅ Client-Side Rate Limiting vs. ❌ Security Risks**
+Placing the rate limiter **on the client side** is **easy to implement**, but it is **vulnerable to tampering** by malicious users. Additionally, enforcing **consistent configurations** across multiple clients can be challenging.
+
+#### **✅ Server-Side Rate Limiting vs. ❌ Increased Load**
+A **server-side rate limiter** provides **better security** and **centralized enforcement**, but it adds **processing overhead** to the server, potentially affecting performance.
+
+#### **✅ Middleware Rate Limiting vs. ❌ Complexity**
+Using a **middleware-based rate limiter** ensures **fine-grained control** over requests before they reach the API servers. However, this approach **adds complexity** to the system architecture and may require **additional infrastructure**.
+
+#### **✅ Global vs. Individual Counters**
+A **global counter** ensures **uniform enforcement** across all requests, but it may **unfairly throttle** users who send fewer requests. On the other hand, **individual counters** allow **personalized rate limits**, but they require **more storage and computational resources**.
