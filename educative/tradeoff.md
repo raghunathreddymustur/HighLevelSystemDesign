@@ -298,3 +298,35 @@ Using a **middleware-based rate limiter** ensures **fine-grained control** over 
 
 #### **✅ Global vs. Individual Counters**
 A **global counter** ensures **uniform enforcement** across all requests, but it may **unfairly throttle** users who send fewer requests. On the other hand, **individual counters** allow **personalized rate limits**, but they require **more storage and computational resources**.
+
+Here are the tradeoffs mentioned in the rate limiter algorithms:
+
+### ⚖️ Tradeoffs in Rate Limiter Design
+
+#### 🎭 Token Bucket Algorithm
+- **Allows bursts** of traffic within defined limits.
+   - **Tradeoff:** Can exceed limits at the edges due to refill timing.
+- **Space-efficient** due to minimal memory usage.
+   - **Tradeoff:** Choosing optimal values for parameters is challenging.
+
+#### 💧 Leaking Bucket Algorithm
+- **Processes requests at a constant rate**, preventing bursts.
+   - **Tradeoff:** Bucket overflow can lead to dropped requests.
+- **Space-efficient** with minimal state tracking.
+   - **Tradeoff:** Determining optimal bucket size is difficult.
+
+#### ⏳ Fixed Window Counter Algorithm
+- **Divides time into fixed intervals**, ensuring predictable request limits.
+   - **Tradeoff:** Edge case issues can lead to bursts exceeding limits.
+- **Services new requests** even if previous ones were rejected.
+   - **Tradeoff:** Can cause performance degradation under high traffic.
+
+#### 📜 Sliding Window Log Algorithm
+- **Avoids edge case issues** of fixed window counters.
+   - **Tradeoff:** Consumes extra memory for storing timestamps.
+
+#### 🔄 Sliding Window Counter Algorithm
+- **Smooths out bursts** for better request distribution.
+   - **Tradeoff:** Assumes evenly distributed requests, which may not always be true.
+
+These tradeoffs highlight the balance between **performance, scalability, and accuracy** in rate limiter design. Let me know if you need further refinements! 🚀
