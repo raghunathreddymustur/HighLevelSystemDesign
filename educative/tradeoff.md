@@ -329,4 +329,51 @@ Here are the tradeoffs mentioned in the rate limiter algorithms:
 - **Smooths out bursts** for better request distribution.
    - **Tradeoff:** Assumes evenly distributed requests, which may not always be true.
 
-These tradeoffs highlight the balance between **performance, scalability, and accuracy** in rate limiter design. Let me know if you need further refinements! 🚀
+Here are some tradeoffs mentioned in the **blob store design**:
+
+### 🔄 **Streaming Upload vs. Single-Step Upload**
+- **Tradeoff**: A single-step upload is simple but struggles with large file sizes, requiring more **memory** to handle the data at once. Streaming uploads **split the data into chunks**, reducing memory usage but increasing complexity.
+
+### 🛑 **Manager Node as a Single Point of Failure**
+- **Tradeoff**: The manager node is the **central point** for metadata handling. If it **fails**, the entire system is impacted. To mitigate this, **checkpointing** is used (saving snapshots at intervals). This **adds overhead** but ensures recovery.
+
+### 📌 **Metadata Caching Risks**
+- **Tradeoff**: Caching **improves read performance** by reducing load on the manager node. However, if metadata is **moved due to disk failure**, cached metadata becomes **stale**, leading to failed reads. The client must **flush the cache and fetch fresh metadata** when this occurs.
+
+### 🚀 **Chunk Replication Overhead**
+- **Tradeoff**: Blobs are split into **fixed-size chunks**, which are **replicated** for redundancy. While replication **improves reliability**, it **increases storage costs** and requires a **strategy for efficient placement**.
+
+
+Here are some tradeoffs mentioned in the **blob store design**:
+
+### 📏 **Chunk Size Selection**
+- **Tradeoff**: Choosing a **small chunk size** increases metadata overhead, making management more complex. On the other hand, **large chunk sizes** can lead to inefficient disk allocation, reducing read/write performance.
+
+### 🔄 **Synchronous vs. Asynchronous Replication**
+- **Tradeoff**: **Synchronous replication** ensures **strong consistency** but increases **write latency**. **Asynchronous replication** improves **availability** but may lead to temporary inconsistencies across regions.
+
+### 🗑️ **Garbage Collection for Blob Deletion**
+- **Tradeoff**: **Immediate deletion** can slow down performance due to metadata updates across multiple nodes. Instead, marking blobs as **deleted** allows for **fast user response**, but requires a **garbage collector** to clean up storage later.
+
+### 🔍 **Partitioning Strategy**
+- **Tradeoff**: Partitioning blobs **independently** can make retrieval slow, requiring multiple partition lookups. Partitioning based on **blob path (account ID, container ID, blob ID)** improves **performance** but may lead to **uneven data distribution**.
+
+### 🚀 **Blob Indexing Overhead**
+- **Tradeoff**: Indexing blobs **improves search efficiency** but adds **storage and processing overhead**. Sorting blobs in advance speeds up retrieval but requires **additional computation during storage**.
+
+Here are some tradeoffs mentioned in the **blob store design**:
+
+### ⚖️ **Replication for Availability vs. Write Performance**
+- **Tradeoff**: Keeping **four replicas per blob** improves **availability** and ensures data can be retrieved even if one node fails. However, **replicating data** increases **write latency**, since multiple copies must be updated before acknowledging the user’s request.
+
+### 🔄 **Manager Node Backup Strategy**
+- **Tradeoff**: Keeping a **backup state** ensures **quick recovery** during failures, but maintaining **continuous snapshots** adds overhead to system operations. Recovery time depends on **how frequently backups are taken**—**frequent backups ensure minimal downtime** but increase storage usage.
+
+### 🔍 **Partitioning Strategy for Scalability**
+- **Tradeoff**: Partitioning blobs into **ranges served by different servers** enables **load balancing** and **fast retrieval**. However, if partitions are **not evenly distributed**, some servers **may receive more traffic than others**, leading to **uneven system performance**.
+
+### 🚀 **Caching for Throughput vs. Consistency**
+- **Tradeoff**: Caching at multiple levels (**client-side, front-end servers, manager node**) improves **throughput and response times**. However, if a blob **changes frequently**, cached data can become **stale**, leading to **temporary inconsistencies**.
+
+### 🔗 **Synchronous vs. Asynchronous Replication for Consistency**
+- **Tradeoff**: **Synchronous replication** ensures **strong consistency** by replicating data inside the storage cluster **immediately** upon a write request. However, it increases **write latency**. **Asynchronous replication**, on the other hand, improves **availability** but introduces **temporary inconsistencies** across regions.
